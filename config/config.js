@@ -12,6 +12,8 @@ module.exports = {
         rejectUnauthorized: false,
       },
     },
+    port: process.env.PORT || 3000, // Puerto
+    isProd: false, // Indica si es producción
   },
   production: {
     url: process.env.DATABASE_URL,
@@ -23,5 +25,7 @@ module.exports = {
         rejectUnauthorized: false,
       },
     },
+    port: process.env.PORT || 3000, // Puerto
+    isProd: true, // Indica si es producción
   },
 };

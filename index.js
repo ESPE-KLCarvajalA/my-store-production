@@ -1,21 +1,25 @@
+// index.js
 require('dotenv').config(); // Cargar variables de entorno
 const express = require('express');
 const routerApi = require('./routes');
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
-const setupSecurity = require('./middlewares/security'); // Seguridad
+// const setupSecurity = require('./middlewares/security'); /
 
-const { config } = require('./config/config'); // Importar configuración global
+const config = require('./config/config'); // Importar configuración global
 const sequelize = require('./db/database'); // Importar la conexión a la base de datos
+
+// Determina el entorno, por defecto 'development'
+const environment = process.env.NODE_ENV || 'development';
+const port = config[environment].port; // Accede al puerto dependiendo del entorno
 
 // Inicialización de la aplicación
 const app = express();
-const port = config.port;
 
 // Middleware para parseo de JSON
 app.use(express.json());
 
 // Aplicar configuraciones de seguridad
-setupSecurity(app);
+// setupSecurity(app);
 
 // Ruta de prueba para verificar si el servidor está corriendo
 app.get('/', (req, res) => {
