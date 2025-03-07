@@ -1,19 +1,14 @@
-// db/database.js
 const { Sequelize } = require('sequelize');
-const { config } = require('../config/config');
+const config = require('../config/config'); // Importa el archivo de configuración
 
-const sequelize = new Sequelize(config.dbUrl, {
+// Determina si estamos en producción o desarrollo
+const environment = process.env.NODE_ENV || 'development'; // Default a 'development' si no está definido
+
+const sequelize = new Sequelize(config[environment].url, {
   dialect: 'postgres',
-  dialectOptions: config.isProd
-    ? {
-        ssl: {
-          require: true,
-          rejectUnauthorized: false,
-        },
-      }
-    : {},
-  logging: config.isProd ? false : console.log, // Desactiva logs en producción
-  pool: config.isProd
+  dialectOptions: config[environment].dialectOptions,
+  logging: environment === 'production' ? false : console.log, // Desactiva logs en producción
+  pool: environment === 'production'
     ? {
         max: 5,
         min: 0,
