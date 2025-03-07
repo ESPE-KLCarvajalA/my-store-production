@@ -1,13 +1,27 @@
 // config/config.js
 require('dotenv').config();
 
-const config = {
-  env: process.env.NODE_ENV || 'development',
-  isProd: process.env.NODE_ENV === 'production',
-  port: process.env.PORT || 3000,
-  
-  // Usar DATABASE_URL en producción (Railway proporciona esta variable)
-  dbUrl: process.env.DATABASE_URL || `postgres://${encodeURIComponent(process.env.DB_USER || 'postgres')}:${encodeURIComponent(process.env.DB_PASSWORD || 'tu_contraseña')}@${process.env.DB_HOST || 'localhost'}:${process.env.DB_PORT || 5432}/${process.env.DB_NAME || 'my_store'}`
+module.exports = {
+  development: {
+    url: process.env.DATABASE_URL,
+    dialect: 'postgres',
+    logging: console.log,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  },
+  production: {
+    url: process.env.DATABASE_URL,
+    dialect: 'postgres',
+    logging: console.log,
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
+  },
 };
-
-module.exports = { config };

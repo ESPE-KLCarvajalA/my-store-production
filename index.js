@@ -2,27 +2,30 @@ require('dotenv').config(); // Cargar variables de entorno
 const express = require('express');
 const routerApi = require('./routes');
 const { logErrors, errorHandler, boomErrorHandler } = require('./middlewares/error.handler');
-const setupSecurity = require('./middlewares/security'); // Seguridad
-
-const { config } = require('./config/config'); // Importar configuración global
-const sequelize = require('./db/database'); // Importar la conexión a la base de datos
+const setupSecurity = require('./middlewares/security'); // Importar el módulo de seguridad
 
 // Inicialización de la aplicación
 const app = express();
-const port = config.port;
+const port = process.env.PORT || 3000;
 
 // Middleware para parseo de JSON
 app.use(express.json());
 
 // Aplicar configuraciones de seguridad
+// IMPORTANTE: setupSecurity es una función que recibe app como parámetro
+// NO se usa con app.use()
 setupSecurity(app);
 
-// Ruta de prueba para verificar si el servidor está corriendo
+// Rutas básicas
 app.get('/', (req, res) => {
-  res.send('Servidor Express en ejecución');
+  res.send('Hola servidor de express');
 });
 
-// Configurar rutas principales
+app.get('/nueva-ruta', (req, res) => {
+  res.send('Hola, soy una nueva ruta');
+});
+
+// Configuración de rutas principales
 routerApi(app);
 
 // Middlewares de manejo de errores
@@ -30,17 +33,7 @@ app.use(logErrors);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-// Verificar la conexión con la base de datos antes de iniciar el servidor
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log('✅ Conectado a la base de datos con éxito');
-    // Iniciar el servidor solo si la base de datos está conectada
-    app.listen(port, () => {
-      console.log(`🚀 Servidor corriendo en el puerto ${port}`);
-    });
-  })
-  .catch((error) => {
-    console.error('❌ Error al conectar con la base de datos:', error);
-    process.exit(1); // Detiene la ejecución si la base de datos no está disponible
-  });
+// Iniciar el servidor
+app.listen(port, () => {
+  console.log('Mi puerto ' + port);
+});
